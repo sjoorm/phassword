@@ -62,6 +62,7 @@ function prompt($question, $defaultAnswer) {
 $dataEncrypted = 'eblEkH9n+K7htjDlZrBke00RR/0EJoSv5HtmL8AX9ehKOixnGF6ogLVgPE2lJ21nHKI11hneG96nK9wjKjmqkQ==';
 $dataDecrypted = decrypt($dataEncrypted, $master);
 $data = json_decode($dataDecrypted, true);
+$modified = false;
 
 $workflow = prompt("What do you want to do?\n 1 - List all keys\n 2 - Show value by key\n 3 - Add value by new key\n 4 - Delete specified key.", 0);
 switch($workflow) {
@@ -83,9 +84,40 @@ switch($workflow) {
         }
         break;
     case '3':
+        $key = prompt('Enter the key that you need.', null);
+        if($key && isset($data[$key])) {
+            echo "Error: key already exists.\n";
+            exit(3);
+        } else {
+            $value = prompt('Enter value:', null);
+            if(empty($value)) {
+                echo "Error: value is empty";
+                exit(3);
+            } else {
+                $data[$key] = $value;
+                $modified = true;
+            }
+        }
         break;
     case '4':
+        $key = prompt('Enter the key that you need.', null);
+        if($key && isset($data[$key])) {
+            unset($data[$key]);
+            $modified = true;
+        } else {
+            echo "Error: key doesn't exist.\n";
+            exit(4);
+        }
         break;
     default:
+        echo "Error: unknown command.\n";
+        exit(5);
         break;
+}
+
+var_dump($data);
+
+if($modified) {
+    $dataNew = encrypt(json_encode($data), $master);
+    var_dump($dataNew);
 }
