@@ -1,3 +1,4 @@
+#!/usr/bin/env/ php
 <?php
 /**
  * @author Alexey Tishchenko <tischenkoalexey1@gmail.com>
