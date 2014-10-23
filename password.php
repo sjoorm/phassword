@@ -5,7 +5,9 @@
  * @website https://sjoorm.com
  * date: 2014-10-01
  */
-$master = isset($argv[1]) ? $argv[1] : null;
+echo "Master password:\n";
+$master = fgets(STDIN);
+$master = substr($master, 0, strlen($master) - 1);
 if(empty($master)) {
     echo "Error: you should provide master password.\n";
     exit(1);
@@ -78,7 +80,7 @@ while($menu) {
                 echo "[$key]\n";
                 ++$amount;
             }
-            echo "Total: $amount key(s).";
+            echo "Total: $amount key(s).\n";
             break;
         case '2':
             $key = prompt('Enter the key that you need.', null);
