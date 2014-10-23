@@ -64,55 +64,56 @@ $dataDecrypted = decrypt($dataEncrypted, $master);
 $data = json_decode($dataDecrypted, true);
 $modified = false;
 
-$workflow = prompt("What do you want to do?\n 1 - List all keys\n 2 - Show value by key\n 3 - Add value by new key\n 4 - Delete specified key.", 0);
-switch($workflow) {
-    case '1':
-        $amount = 0;
-        foreach($data as $key => $value) {
-            echo "[$key]\n";
-            ++$amount;
-        }
-        echo "Total: $amount key(s).";
-        break;
-    case '2':
-        $key = prompt('Enter the key that you need.', null);
-        if($key && isset($data[$key])) {
-            echo "{$data[$key]}\n";
-        } else {
-            echo "Error: key doesn't exist.\n";
-            exit(2);
-        }
-        break;
-    case '3':
-        $key = prompt('Enter the key that you need.', null);
-        if($key && isset($data[$key])) {
-            echo "Error: key already exists.\n";
-            exit(3);
-        } else {
-            $value = prompt('Enter value:', null);
-            if(empty($value)) {
-                echo "Error: value is empty";
-                exit(3);
-            } else {
-                $data[$key] = $value;
-                $modified = true;
+$menu = true;
+while($menu) {
+    $workflow = prompt("What do you want to do?\n 0 - Exit\n 1 - List all keys\n 2 - Show value by key\n 3 - Add value by new key\n 4 - Delete specified key.", 0);
+    switch ($workflow) {
+        case '1':
+            $amount = 0;
+            foreach ($data as $key => $value) {
+                echo "[$key]\n";
+                ++$amount;
             }
-        }
-        break;
-    case '4':
-        $key = prompt('Enter the key that you need.', null);
-        if($key && isset($data[$key])) {
-            unset($data[$key]);
-            $modified = true;
-        } else {
-            echo "Error: key doesn't exist.\n";
-            exit(4);
-        }
-        break;
-    default:
-        echo "Error: unknown command.\n";
-        exit(5);
-        break;
+            echo "Total: $amount key(s).";
+            break;
+        case '2':
+            $key = prompt('Enter the key that you need.', null);
+            if ($key && isset($data[$key])) {
+                echo "{$data[$key]}\n";
+            } else {
+                echo "Error: key doesn't exist.\n";
+            }
+            break;
+        case '3':
+            $key = prompt('Enter the key that you need.', null);
+            if ($key && isset($data[$key])) {
+                echo "Error: key already exists.\n";
+            } else {
+                $value = prompt('Enter value:', null);
+                if (empty($value)) {
+                    echo "Error: value is empty";
+                } else {
+                    $data[$key] = $value;
+                    $modified = true;
+                }
+            }
+            break;
+        case '4':
+            $key = prompt('Enter the key that you need.', null);
+            if ($key && isset($data[$key])) {
+                unset($data[$key]);
+                $modified = true;
+            } else {
+                echo "Error: key doesn't exist.\n";
+            }
+            break;
+        case 0:
+            $menu = false;
+            break;
+        default:
+            echo "Error: unknown command.\n";
+            break;
+    }
 }
 
 var_dump($data);
