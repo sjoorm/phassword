@@ -5,7 +5,7 @@
  * @website https://sjoorm.com
  * date: 2014-10-01
  */
-$master = $argv[1] ?: null;
+$master = isset($argv[1]) ? $argv[1] : null;
 if(empty($master)) {
     echo "Error: you should provide master password.\n";
     exit(1);
