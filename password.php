@@ -59,9 +59,13 @@ function prompt($question, $defaultAnswer) {
 }
 
 #DATA#
-$dataEncrypted = '+myNJR7fpl2+WHAqjv0TUjmE+IUPrIstl4D4IE2bB9X3k7GeV7eeETNtr4TiNIjCrutIPemdhSzU4dnS5LX10Q==';
+$dataEncrypted = '9oog/rrwC/Wj7r9X1pB4mMBtzA4n4j5dgnTUhtbr9Peqa8PumoB8RE51MhpD16u4NJpzLrmLUkRCzFfDZjEUVw==';
 $dataDecrypted = decrypt($dataEncrypted, $master);
 $data = json_decode($dataDecrypted, true);
+if(!isset($data) || !is_array($data)) {
+    echo "Error: incorrect master password.\n";
+    exit(2);
+}
 $modified = false;
 
 $menu = true;
