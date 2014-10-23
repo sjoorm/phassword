@@ -59,7 +59,7 @@ function prompt($question, $defaultAnswer) {
 }
 
 #DATA#
-$dataEncrypted = 'eblEkH9n+K7htjDlZrBke00RR/0EJoSv5HtmL8AX9ehKOixnGF6ogLVgPE2lJ21nHKI11hneG96nK9wjKjmqkQ==';
+$dataEncrypted = '+myNJR7fpl2+WHAqjv0TUjmE+IUPrIstl4D4IE2bB9X3k7GeV7eeETNtr4TiNIjCrutIPemdhSzU4dnS5LX10Q==';
 $dataDecrypted = decrypt($dataEncrypted, $master);
 $data = json_decode($dataDecrypted, true);
 $modified = false;
@@ -116,9 +116,34 @@ while($menu) {
     }
 }
 
-var_dump($data);
 
 if($modified) {
-    $dataNew = encrypt(json_encode($data), $master);
-    var_dump($dataNew);
+    $dataEncryptedNew = encrypt(json_encode($data), $master);
+    $file = fopen(__FILE__, 'r');
+    if ($file) {
+        $content = [];
+        while (!feof($file)) {
+            $line = fgets($file);
+            if ($line === "#DATA#\n") {
+                fgets($file); //skip ENCRYPTED DATA line
+                $content[] = $line;
+                $content[] = "\$dataEncrypted = '$dataEncryptedNew';\n";
+            } else {
+                $content[] = $line;
+            }
+        }
+        fseek($file, 0);
+        fclose($file);
+        $file = fopen(__FILE__, 'w');
+        if($file) {
+            foreach($content as $line) {
+                fwrite($file, $line);
+            }
+            fclose($file);
+        } else {
+            echo "Error: can not open script for writing.\n";
+        }
+    } else {
+        echo "Error: can not open script for reading.\n";
+    }
 }
