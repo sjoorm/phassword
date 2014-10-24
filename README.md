@@ -1,1 +1,2 @@
-php-password
+# phassword
+Simple PHP password manager
