@@ -6,13 +6,6 @@
  * @website https://sjoorm.com
  * date: 2014-10-01
  */
-echo "Master password:\n";
-$master = fgets(STDIN);
-$master = substr($master, 0, strlen($master) - 1);
-if(empty($master)) {
-    echo "Error: you should provide master password.\n";
-    exit(1);
-}
 
 /**
  * Encryption
@@ -61,8 +54,14 @@ function prompt($question, $defaultAnswer) {
     return $input ?: $defaultAnswer;
 }
 
+$master = prompt('Master password:', null);
+if(empty($master)) {
+    echo "Error: you should provide master password.\n";
+    exit(1);
+}
+
 #DATA#
-$dataEncrypted = '9oog/rrwC/Wj7r9X1pB4mMBtzA4n4j5dgnTUhtbr9Peqa8PumoB8RE51MhpD16u4NJpzLrmLUkRCzFfDZjEUVw==';
+$dataEncrypted = 'yS7nJ0RtvxCN8ojn1xycRyR0l879TY/fGzdWy5C6RKFEwy8+FWW1WvZBchgsLDiH85+XFIaf3yq+3KqqRe7++g==';
 $dataDecrypted = decrypt($dataEncrypted, $master);
 $data = json_decode($dataDecrypted, true);
 if(!isset($data) || !is_array($data)) {
@@ -72,10 +71,11 @@ if(!isset($data) || !is_array($data)) {
 $modified = false;
 
 $menu = true;
+$workflow = -1;
 while($menu) {
-    $workflow = prompt("What do you want to do?\n 0 - Exit\n 1 - List all keys\n 2 - Show value by key\n 3 - Add value by new key\n 4 - Delete specified key.", 0);
+    system('clear');
     switch ($workflow) {
-        case '1':
+        case 1:
             $amount = 0;
             foreach ($data as $key => $value) {
                 echo "[$key]\n";
@@ -83,7 +83,7 @@ while($menu) {
             }
             echo "Total: $amount key(s).\n";
             break;
-        case '2':
+        case 2:
             $key = prompt('Enter the key that you need.', null);
             if ($key && isset($data[$key])) {
                 echo "{$data[$key]}\n";
@@ -91,7 +91,7 @@ while($menu) {
                 echo "Error: key doesn't exist.\n";
             }
             break;
-        case '3':
+        case 3:
             $key = prompt('Enter the key that you need.', null);
             if ($key && isset($data[$key])) {
                 echo "Error: key already exists.\n";
@@ -105,7 +105,7 @@ while($menu) {
                 }
             }
             break;
-        case '4':
+        case 4:
             $key = prompt('Enter the key that you need.', null);
             if ($key && isset($data[$key])) {
                 unset($data[$key]);
@@ -114,15 +114,33 @@ while($menu) {
                 echo "Error: key doesn't exist.\n";
             }
             break;
+        case 5:
+            $masterNew = prompt('Enter new master password:', null);
+            if(empty($masterNew)) {
+                echo "Error: password can not be blank.\n";
+            } else {
+                $master = $masterNew;
+                $modified = true;
+            }
+            break;
         case 0:
             $menu = false;
+            system('clear');
             break;
         default:
-            echo "Error: unknown command.\n";
+            echo "You must enter one of the following commands.\n";
             break;
     }
+    $workflow = prompt(
+        "============================\n" .
+        "What do you want to do?\n" .
+        " 0 - Exit\n" .
+        " 1 - List all keys\n" .
+        " 2 - Show value by key\n" .
+        " 3 - Add value by new key\n" .
+        " 4 - Delete specified key\n" .
+        " 5 - Change master password.\n", 0);
 }
-
 
 if($modified) {
     $dataEncryptedNew = encrypt(json_encode($data), $master);
